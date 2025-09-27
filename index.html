@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cyber Crime & Safety - Demo</title>
+  <style>
+    /* Base styles */
+    body { 
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+      max-width:900px; 
+      margin:24px auto; 
+      padding:16px; 
+      line-height:1.6; 
+      background-image: url(https://marketplace.canva.com/EAD2962NKnQ/2/0/1600w/canva-rainbow-gradient-pink-and-purple-virtual-background-_Tcjok-d9b4.jpg);
+      background-size: cover;
+      color:#222; 
+      transition: background 0.6s ease, color 0.6s ease;
+    }
+    body.dark {
+      background: linear-gradient(135deg,#0f172a,#1e293b);
+      color:#eee;
+    }
+
+    h1 { 
+      font-size:32px; 
+      margin-bottom:12px; 
+      text-align:center; 
+      background:linear-gradient(90deg,#3b82f6,#9333ea,#ec4899); 
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      animation: gradientFlow 5s ease infinite;
+      background-size:200% auto;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+      100% { background-position: 0% center; }
+    }
+
+    h2 { margin-bottom:8px; color:#1f6feb; transition:color 0.4s; }
+    body.dark h2 { color:#93c5fd; }
+
+    .card { 
+      border-radius:16px; 
+      box-shadow:0 8px 26px rgba(0,0,0,0.1); 
+      padding:20px; 
+      margin:20px 0; 
+      background: #ffffffcc; 
+      backdrop-filter: blur(8px); 
+      transition: background 0.6s, transform 0.3s;
+      animation: fadeIn 0.6s ease;
+    }
+    .card:hover { transform: translateY(-4px) scale(1.01); }
+    body.dark .card { background:#1e293bcc; }
+
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(20px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    .meter { height:14px; border-radius:8px; background:#e5e7eb; overflow:hidden; }
+    body.dark .meter { background:#374151; }
+    .meter-fill { height:100%; width:0%; transition:width 300ms ease; }
+
+    button { 
+      padding:10px 18px; 
+      border-radius:12px; 
+      border:none; 
+      cursor:pointer; 
+      background: linear-gradient(90deg,#2563eb,#9333ea); 
+      color:white; 
+      font-weight:600; 
+      transition: transform 0.25s, background 0.4s;
+    }
+    button:hover { transform:scale(1.07) rotate(-1deg); background:linear-gradient(90deg,#3b82f6,#ec4899); }
+
+    .email { 
+      padding:14px; 
+      border-radius:12px; 
+      border:1px solid #e5e7eb; 
+      margin:12px 0; 
+      transition:background 0.3s, transform 0.2s;
+    }
+    .email:hover { background:#f9fafb; transform:scale(1.01); }
+    body.dark .email { border-color:#374151; }
+    body.dark .email:hover { background:#111827; }
+
+    .feedback { margin-top:10px; font-weight:700; font-size:16px; }
+    .hint { font-size:14px; color:#444; margin-top:6px; }
+    body.dark .hint { color:#aaa; }
+
+    .green { background: linear-gradient(90deg,#34d399,#10b981); }
+    .orange { background: linear-gradient(90deg,#fbbf24,#fb923c); }
+    .red { background: linear-gradient(90deg,#f87171,#ef4444); }
+
+    .explain { 
+      font-size:14px; 
+      color:#333; 
+      margin-top:10px; 
+      background:#f8fafc; 
+      padding:12px; 
+      border-radius:12px; 
+      border:1px solid #eef2ff; 
+      animation: fadeIn 0.6s ease;
+    }
+    body.dark .explain { color:#ddd; background:#1f2937; border-color:#374151; }
+
+    /* Dark mode toggle button */
+    #darkToggle {
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      padding:12px 18px;
+      border-radius:50px;
+      border:none;
+      cursor:pointer;
+      background:rgba(31,41,55,0.65);
+      color:white;
+      backdrop-filter:blur(6px);
+      font-size:15px;
+      font-weight:600;
+      z-index:999;
+      transition:background 0.3s, transform 0.25s;
+    }
+    #darkToggle:hover { background:rgba(59,130,246,0.85); transform:scale(1.08); }
+  </style>
+</head>
+<body>
+  <h1>Cyber Crime & Safety — Interactive Demo</h1>
+  <p class="hint">Try the two sections below: (A) Password Strength Meter — type a password and see strength. (B) Phishing Simulator — read short emails and spot suspicious ones.</p>
+
+  <div class="card">
+    <h2>🔒 A. Password Strength Meter</h2>
+    <label>Enter a password:</label><br/>
+    <input id="pw" type="password" style="padding:10px; width:80%; margin-top:8px; border-radius:8px; border:1px solid #ddd;" placeholder="Type a sample password">
+    <div style="margin-top:12px;">
+      <div class="meter" aria-hidden>
+        <div id="fill" class="meter-fill"></div>
+      </div>
+      <div id="pwLabel" style="margin-top:8px; font-weight:600;">Strength: —</div>
+      <div class="hint">💡 Tip: use long passphrases (12+ chars), mixed characters, and enable multi-factor authentication.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📧 B. Phishing Simulator</h2>
+    <p class="hint">Select the emails you think are suspicious. Click "Check" to see explanations.</p>
+
+    <div id="emails"></div>
+
+    <div style="margin-top:10px;">
+      <button id="checkBtn">Check selections</button>
+      <div id="result" class="feedback"></div>
+    </div>
+  </div>
+
+  <div class="card">
+  <h2>💥 C. Message Bombing Simulator</h2>
+  <div style="margin-bottom:10px;">
+    <label>Enter mobile number:<br>
+      <input type="text" id="mbMobile" placeholder="10-digit mobile" style="padding:7px; width:60%; border-radius:8px; border:1px solid #ddd;">
+    </label>
+  </div>
+  <div style="margin-bottom:10px;">
+    <label>Number of messages:<br>
+      <input type="number" min="1" max="20" id="mbCount" value="5" style="padding:7px; width:60px; border-radius:8px; border:1px solid #ddd;">
+    </label>
+  </div>
+  <button id="mbBtn">Start Bombing</button>
+  <div class="hint" style="margin:10px 0 0 0;">This demo simulates (but does NOT send) SMS from an anonymous sender to the given number. Just for Educational Purposes only.</div>
+  <div id="mbResult" style="margin-top:14px;"></div>
+  </div>
+
+  <!-- Dark mode button -->
+  <button id="darkToggle">🌙 Dark Mode</button>
+
+  <script>
+    /* Password strength */
+    const pw = document.getElementById('pw');
+    const fill = document.getElementById('fill');
+    const pwLabel = document.getElementById('pwLabel');
+
+    function evaluatePassword(s) {
+      let score = 0;
+      if (s.length >= 8) score += 1;
+      if (s.length >= 12) score += 1;
+      if (/[a-z]/.test(s) && /[A-Z]/.test(s)) score += 1;
+      if (/\d/.test(s)) score += 1;
+      if (/[^A-Za-z0-9]/.test(s)) score += 1;
+      if (/^(password|123456|qwerty|admin)/i.test(s)) score = Math.max(0, score-2);
+      return Math.min(5, Math.max(0, score));
+    }
+
+    function updateMeter() {
+      const s = pw.value;
+      const score = evaluatePassword(s);
+      const pct = (score / 5) * 100;
+      fill.style.width = pct + '%';
+      fill.className = 'meter-fill';
+      if (score <= 1) { fill.classList.add('red'); pwLabel.textContent = 'Strength: Very weak'; }
+      else if (score === 2) { fill.classList.add('orange'); pwLabel.textContent = 'Strength: Weak'; }
+      else if (score === 3) { fill.classList.add('orange'); pwLabel.textContent = 'Strength: Moderate'; }
+      else if (score === 4) { fill.classList.add('green'); pwLabel.textContent = 'Strength: Strong'; }
+      else { fill.classList.add('green'); pwLabel.textContent = 'Strength: Very strong'; }
+    }
+    pw.addEventListener('input', updateMeter);
+    updateMeter();
+
+    /* Phishing emails */
+    const emailsData = [
+      {
+        id: 1,
+        from: "support@yourbank-login.com",
+        subject: "Urgent: Verify your account immediately",
+        preview: "We detected suspicious activity. Click the link below to verify your account now or it will be blocked.",
+        suspicious: true,
+        explanation: "From address is suspicious (extra words like '-login'), urgent language + link — classic phishing red flags. Real banks rarely force immediate click-throughs."
+      },
+      {
+        id: 2,
+        from: "hr@yourcompany.edu",
+        subject: "Your payslip for Sept attached",
+        preview: "Hello — your payslip is attached. Please confirm receipt.",
+        suspicious: false,
+        explanation: "Looks legitimate if you expect it and it comes from a known internal address. Still: verify attachments and scan for malware."
+      },
+      {
+        id: 3,
+        from: "it-support@files.example.com",
+        subject: "Shared document: 'Invoice_7249.pdf'",
+        preview: "A document has been shared with you. Open here: tinyurl[.]xyz/abc (link).",
+        suspicious: true,
+        explanation: "Unexpected shared document + short URL + unfamiliar domain = risky. Verify sender via separate channel before opening."
+      }
+    ];
+
+    const emailsDiv = document.getElementById('emails');
+    emailsData.forEach(e => {
+      const el = document.createElement('div');
+      el.className = 'email';
+      el.innerHTML = `
+        <header>
+          <div>
+            <div style="font-weight:700">${e.subject}</div>
+            <div style="font-size:13px; color:#666">${e.from}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+            <label style="font-size:13px;"><input data-id="${e.id}" type="checkbox"> Mark suspicious</label>
+            <small style="font-size:12px; color:#888;">Preview</small>
+          </div>
+        </header>
+        <div>${e.preview}</div>
+      `;
+      emailsDiv.appendChild(el);
+    });
+
+    document.getElementById('checkBtn').addEventListener('click', () => {
+      const checks = Array.from(document.querySelectorAll('input[type=checkbox]'));
+      let correct = 0, total = emailsData.length;
+      let feedbackHTML = '';
+      checks.forEach(ch => {
+        const id = Number(ch.getAttribute('data-id'));
+        const chosen = ch.checked;
+        const item = emailsData.find(x => x.id === id);
+        const ok = (chosen === item.suspicious);
+        if (ok) correct++;
+        feedbackHTML += `<div class="explain"><strong>${item.subject}</strong><br/>Your choice: <em>${chosen ? 'Marked suspicious' : 'Not marked'}</em><br/>Result: <strong>${ok ? 'Correct' : 'Incorrect'}</strong><br/><div style="margin-top:6px;">Why: ${item.explanation}</div></div>`;
+      });
+      document.getElementById('result').innerHTML = `Score: ${correct} / ${total}`;
+      const container = document.createElement('div');
+      container.innerHTML = feedbackHTML;
+      if (document.getElementById('explainContainer')) document.getElementById('explainContainer').remove();
+      container.id = 'explainContainer';
+      container.style.marginTop = '12px';
+      document.getElementById('result').insertAdjacentElement('afterend', container);
+    });
+
+    /* Dark mode toggle */
+    const toggleBtn = document.getElementById('darkToggle');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      toggleBtn.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    });
+    // Message Bombing Simulator (Safe/Educational Demo — does not send real messages)
+document.getElementById('mbBtn').addEventListener('click', function() {
+  const mobile = document.getElementById('mbMobile').value.trim();
+  const count = parseInt(document.getElementById('mbCount').value);
+  const mbResult = document.getElementById('mbResult');
+  mbResult.innerHTML = ''; // Clear previous output
+
+  // Basic input validation
+  if (!/^\d{10}$/.test(mobile)) {
+    mbResult.innerHTML = '<div class="explain" style="color:#b91c1c;">Please enter a valid 10-digit mobile number.</div>';
+    return;
+  }
+  if (isNaN(count) || count < 1 || count > 20) {
+    mbResult.innerHTML = '<div class="explain" style="color:#b91c1c;">Enter a message count between 1 and 20.</div>';
+    return;
+  }
+
+  let out = `<div style="font-size:16px;"><strong>Sending ${count} anonymous messages to ${mobile}...</strong></div><ul style="padding-left:20px;">`;
+  for (let i = 1; i <= count; i++) {
+    out += `<li><span style="color:#4f46e5;">From:</span> Anonymous &nbsp; 
+              <span style="color:#9333ea;">To:</span> ${mobile} 
+              &nbsp; <span style="color:#10b981;">Message:</span> "Patience is the key to Success"</li>`;
+  }
+  out += '</ul><div class="hint">Simulation complete — No real messages were sent.</div>';
+  mbResult.innerHTML = out;
+});
+
+  </script>
+</body>
+</html>
