@@ -209,32 +209,107 @@
     updateMeter();
 
     /* Phishing emails */
-    const emailsData = [
-      {
-        id: 1,
-        from: "support@yourbank-login.com",
-        subject: "Urgent: Verify your account immediately",
-        preview: "We detected suspicious activity. Click the link below to verify your account now or it will be blocked.",
-        suspicious: true,
-        explanation: "From address is suspicious (extra words like '-login'), urgent language + link — classic phishing red flags. Real banks rarely force immediate click-throughs."
-      },
-      {
-        id: 2,
-        from: "hr@yourcompany.edu",
-        subject: "Your payslip for Sept attached",
-        preview: "Hello — your payslip is attached. Please confirm receipt.",
-        suspicious: false,
-        explanation: "Looks legitimate if you expect it and it comes from a known internal address. Still: verify attachments and scan for malware."
-      },
-      {
-        id: 3,
-        from: "it-support@files.example.com",
-        subject: "Shared document: 'Invoice_7249.pdf'",
-        preview: "A document has been shared with you. Open here: tinyurl[.]xyz/abc (link).",
-        suspicious: true,
-        explanation: "Unexpected shared document + short URL + unfamiliar domain = risky. Verify sender via separate channel before opening."
-      }
-    ];
+    // Helper function to generate a random string of given length
+function randomString(length) {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for(let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+// Helper function to generate a random email address
+function randomEmail() {
+  const domains = ['example.com', 'yourbank.com', 'webmail.net', 'company.org', 'mailservice.io'];
+  return `${randomString(5 + Math.floor(Math.random() * 5))}@${domains[Math.floor(Math.random() * domains.length)]}`;
+}
+
+// Known legitimate sender domains for realism
+const legitimateDomains = ['yourcompany.edu', 'hr.yourcompany.edu', 'itdept.yourcompany.edu'];
+
+// Legitimate email subjects and previews
+const legitimateSubjects = [
+  'Monthly Payslip Attached',
+  'Meeting Reminder: Project Update',
+  'Company Newsletter - September Edition',
+  'Your Scheduled Leave Confirmation',
+  'IT Department Notice: Scheduled Maintenance'
+];
+
+const legitimatePreviews = [
+  'Please find your payslip attached for this month.',
+  'Reminder for tomorrow’s project status update meeting.',
+  'Read about recent company events and announcements.',
+  'Your leave request has been approved by HR.',
+  'Scheduled maintenance will occur this weekend. No interruptions expected.'
+];
+
+// Phishing email subjects and previews
+const phishingSubjects = [
+  'Urgent: Verify Your Account Immediately',
+  'Important: Password Reset Required',
+  'Invoice Payment Overdue - Immediate Action Needed',
+  'Suspicious Login Attempt Detected',
+  'You Have Won a Prize! Claim Now'
+];
+
+const phishingPreviews = [
+  'We detected suspicious activity. Verify your account now or it will be blocked.',
+  'Your password expired. Reset it immediately by clicking the link.',
+  'Your recent invoice is overdue. Pay now to avoid penalties.',
+  'An unknown device attempted to access your account. Confirm it was you.',
+  'You have been selected for a prize. Click here to claim it.'
+];
+
+// Explanations for phishing and legitimate emails
+const phishingExplanations = [
+  'Suspicious sender address and urgent language are classic phishing indicators.',
+  'Links lead to unfamiliar or shortened URLs, potentially dangerous.',
+  'Unexpected attachments and threats to block your account are red flags.',
+  'Request for sensitive information via email is suspicious behavior.',
+  'Poor grammar and spelling errors indicate a phishing attempt.'
+];
+
+const legitimateExplanations = [
+  'Sender address is from a known internal domain and content is expected.',
+  'No suspicious links or urgent calls to action detected.',
+  'Attachments are expected and safe when verified internally.',
+  'Email follows typical company style and tone.',
+  'No red flags identified; likely a legitimate communication.'
+];
+
+// Function to create a random phishing or legitimate email
+function generateRandomEmail(id, phishingProbability = 0.5) {
+  const isPhishing = Math.random() < phishingProbability;
+  if (isPhishing) {
+    const from = randomEmail();
+    const subject = phishingSubjects[Math.floor(Math.random() * phishingSubjects.length)];
+    const preview = phishingPreviews[Math.floor(Math.random() * phishingPreviews.length)];
+    const explanation = phishingExplanations[Math.floor(Math.random() * phishingExplanations.length)];
+    return { id, from, subject, preview, suspicious: true, explanation };
+  } else {
+    const from = legitimateDomains[Math.floor(Math.random() * legitimateDomains.length)];
+    const subject = legitimateSubjects[Math.floor(Math.random() * legitimateSubjects.length)];
+    const preview = legitimatePreviews[Math.floor(Math.random() * legitimatePreviews.length)];
+    const explanation = legitimateExplanations[Math.floor(Math.random() * legitimateExplanations.length)];
+    return { id, from, subject, preview, suspicious: false, explanation };
+  }
+}
+
+// Function to generate an array of random emails with a configurable phishing ratio
+function generateRandomEmails(count, phishingRatio = 0.5) {
+  const emails = [];
+  for (let i = 1; i <= count; i++) {
+    emails.push(generateRandomEmail(i, phishingRatio));
+  }
+  return emails;
+}
+
+// Example: generate 10 emails with about 50% phishing and 50% legitimate
+const emailsData = generateRandomEmails(10, 0.5);
+console.log(emailsData);
+
 
     const emailsDiv = document.getElementById('emails');
     emailsData.forEach(e => {
@@ -309,7 +384,6 @@ document.getElementById('mbBtn').addEventListener('click', function() {
   out += '</ul><div class="hint">Simulation complete — No real messages were sent.</div>';
   mbResult.innerHTML = out;
 });
-
   </script>
 </body>
 </html>
